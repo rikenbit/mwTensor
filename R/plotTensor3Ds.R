@@ -1,0 +1,49 @@
+plotTensor3Ds <- function(Xs){
+    num_Xs <- length(Xs)
+    if(num_Xs > 30){
+        message("Cannot visualized because of too many datasets")
+    }else{
+        layout(.layoutMat(num_Xs))
+        for(n in seq(num_Xs)){
+            dimX <- length(dim(Xs[[n]]))
+            if(dimX == 2){
+                if(is.array(Xs[[n]])){
+                    plotTensor2D(as.tensor(Xs[[n]]))
+            	}else{
+	                plotTensor2D(Xs[[n]])
+	            }
+            }
+            if(dimX == 3){
+                if(is.array(Xs[[n]])){
+                    plotTensor3D(as.tensor(Xs[[n]]))
+                }else{
+	                plotTensor3D(Xs[[n]])
+                }
+            }
+            if(dimX >= 4){
+                .SinglePlot(paste0(dimX, "th-order Tensor"))
+            }
+        }
+    }
+}
+
+.layoutMat <- function(n){
+	if(n <= 5){
+		t(seq(n))
+	}else{
+		out <- matrix(0, ceiling(n/5), ncol=5)
+		out <- t(out)
+		out[seq(n)] <- seq(n)
+		t(out)
+	}
+}
+
+.SinglePlot <- function(x){
+    plot(1, 1, col="white", ann=FALSE, xaxt="n", yaxt="n", axes=FALSE)
+    par(ps=10)
+    text(1, 1, x, col="red")
+}
+
+.figheight <- function(n){
+    200 * ceiling(n/5)
+}
