@@ -1,13 +1,14 @@
 Package: mwTensor
 Type: Package
-Title: Multi-way Component Analysis
+Title: Multi-Way Component Analysis
 Version: 0.99.0
 Date: 2021-08-24
 Authors@R: c(person("Koki", "Tsuyuzaki", role = c("aut", "cre"),
                       email = "k.t.the-answer@hotmail.co.jp"))
 Suggests: testthat
 Depends: R (>= 4.1.0)
-Imports: MASS,
+Imports: methods,
+    MASS,
     rTensor,
     nnTensor,
     ccTensor,

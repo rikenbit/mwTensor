@@ -8,16 +8,20 @@ plotTensor3Ds <- function(Xs){
             dimX <- length(dim(Xs[[n]]))
             if(dimX == 2){
                 if(is.array(Xs[[n]])){
-                    plotTensor2D(as.tensor(Xs[[n]]))
+                    plotTensor2D(as.tensor(Xs[[n]]),
+                    	method="sd", sign="positive", thr=1.5)
             	}else{
-	                plotTensor2D(Xs[[n]])
+	                plotTensor2D(Xs[[n]],
+                    	method="sd", sign="positive", thr=1.5)
 	            }
             }
             if(dimX == 3){
                 if(is.array(Xs[[n]])){
-                    plotTensor3D(as.tensor(Xs[[n]]))
+                    plotTensor3D(as.tensor(Xs[[n]]),
+                    	method="sd", sign="positive", thr=1.5)
                 }else{
-	                plotTensor3D(Xs[[n]])
+	                plotTensor3D(Xs[[n]],
+                    	method="sd", sign="positive", thr=1.5)
                 }
             }
             if(dimX >= 4){
@@ -40,10 +44,10 @@ plotTensor3Ds <- function(Xs){
 
 .SinglePlot <- function(x){
     plot(1, 1, col="white", ann=FALSE, xaxt="n", yaxt="n", axes=FALSE)
-    par(ps=10)
+    par(ps=30)
     text(1, 1, x, col="red")
 }
 
 .figheight <- function(n){
-    200 * ceiling(n/5)
+    500 * ceiling(n/5)
 }
