@@ -1,5 +1,5 @@
-# Xs <- toyModel("coupled_Complex_Easy")
-Xs <- toyModel("coupled_Complex_Hard")
+# Xs <- mwTensor::toyModel("coupled_Complex_Easy")
+Xs <- mwTensor::toyModel("coupled_Complex_Hard")
 Xs[[3]] <- Xs[[3]] + array(rbinom(20*23*24,1000,0.1), dim=c(20,23,24))
 
 # X1
@@ -177,6 +177,6 @@ params <- new("CoupledMWCAParams",
 out <- CoupledMWCA(params)
 expect_equal(is(out), "CoupledMWCAResult")
 
-rec <- .recTensors(out@common_cores, out@common_factors,
+rec <- mwTensor:::.recTensors(out@common_cores, out@common_factors,
     out@common_model)
 expect_equal(length(rec), 13)

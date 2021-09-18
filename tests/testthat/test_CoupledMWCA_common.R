@@ -1,4 +1,4 @@
-Xs <- toyModel("coupled_CP_Easy")
+Xs <- mwTensor::toyModel("coupled_CP_Easy")
 
 params <- new("CoupledMWCAParams", Xs=Xs)
 out <- CoupledMWCA(params)
@@ -172,7 +172,7 @@ expect_equal(length(CoupledMWCA(params_dummy)@rel_change), 2)
 
 # Test CP
 .diag <- function(out){
-    num_modes <- .ndim(out@data)
+    num_modes <- mwTensor:::.ndim(out@data)
     min.s <- min(dim(out@data))
     tmp <- rep(0, min.s)
     cmd <- paste0("for(i in seq_len(min.s)){",

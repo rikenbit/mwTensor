@@ -1,114 +1,60 @@
-# Xs <- toyModel("coupled_Complex_Easy")
-Xs <- toyModel("coupled_Complex_Hard")
+# Xs <- mwTensor::toyModel("coupled_Complex_Easy")
+Xs <- mwTensor::toyModel("coupled_Complex_Hard")
 Xs[[3]] <- Xs[[3]] + array(rbinom(20*23*24,1000,0.1), dim=c(20,23,24))
 
-A1 <- mwTensor:::.randMat(6, 15)
-A2 <- mwTensor:::.randMat(6, 20)
-A3 <- mwTensor:::.randMat(6, 25)
-A4 <- mwTensor:::.randMat(6, 30)
-A5 <- mwTensor:::.randMat(6, 21)
-A6 <- mwTensor:::.randMat(6, 22)
-A7 <- mwTensor:::.randMat(6, 23)
-A8 <- mwTensor:::.randMat(6, 24)
-A9 <- mwTensor:::.randMat(6, 25)
-A10 <- mwTensor:::.randMat(6, 26)
-A11 <- mwTensor:::.randMat(6, 27)
-A12 <- mwTensor:::.randMat(6, 28)
-A13 <- mwTensor:::.randMat(6, 11)
-A14 <- mwTensor:::.randMat(6, 12)
-A15 <- mwTensor:::.randMat(6, 13)
-A16 <- mwTensor:::.randMat(6, 14)
-A17 <- mwTensor:::.randMat(6, 15)
-A18 <- mwTensor:::.randMat(6, 16)
-A19 <- mwTensor:::.randMat(6, 17)
-A20 <- mwTensor:::.randMat(6, 18)
+A1 <- mwTensor:::.randMat(7, 15)
+A2 <- mwTensor:::.randMat(7, 20)
+A3 <- mwTensor:::.randMat(7, 25)
+A4 <- mwTensor:::.randMat(7, 30)
+A5 <- mwTensor:::.randMat(7, 21)
+A6 <- mwTensor:::.randMat(7, 22)
+A7 <- mwTensor:::.randMat(7, 23)
+A8 <- mwTensor:::.randMat(7, 24)
+A9 <- mwTensor:::.randMat(7, 25)
+A10 <- mwTensor:::.randMat(7, 26)
+A11 <- mwTensor:::.randMat(7, 27)
+A12 <- mwTensor:::.randMat(7, 28)
+A13 <- mwTensor:::.randMat(7, 11)
+A14 <- mwTensor:::.randMat(7, 12)
+A15 <- mwTensor:::.randMat(7, 13)
+A16 <- mwTensor:::.randMat(7, 14)
+A17 <- mwTensor:::.randMat(7, 15)
+A18 <- mwTensor:::.randMat(7, 16)
+A19 <- mwTensor:::.randMat(7, 17)
+A20 <- mwTensor:::.randMat(7, 18)
 
-B1 <- mwTensor:::.randMat(1, 15)
-B2 <- mwTensor:::.randMat(1, 20)
-B3 <- mwTensor:::.randMat(1, 25)
-B4 <- mwTensor:::.randMat(1, 30)
-B5 <- mwTensor:::.randMat(1, 15)
-B6 <- mwTensor:::.randMat(1, 21)
-B7 <- mwTensor:::.randMat(1, 22)
-B8 <- mwTensor:::.randMat(1, 20)
-B9 <- mwTensor:::.randMat(1, 23)
-B10 <- mwTensor:::.randMat(1, 24)
-B11 <- mwTensor:::.randMat(1, 25)
-B12 <- mwTensor:::.randMat(1, 25)
-B13 <- mwTensor:::.randMat(1, 26)
-B14 <- mwTensor:::.randMat(1, 30)
-B15 <- mwTensor:::.randMat(1, 27)
-B16 <- mwTensor:::.randMat(1, 28)
-B17 <- mwTensor:::.randMat(1, 21)
-B18 <- mwTensor:::.randMat(1, 11)
-B19 <- mwTensor:::.randMat(1, 22)
-B20 <- mwTensor:::.randMat(1, 12)
-B21 <- mwTensor:::.randMat(1, 23)
-B22 <- mwTensor:::.randMat(1, 13)
-B23 <- mwTensor:::.randMat(1, 24)
-B24 <- mwTensor:::.randMat(1, 14)
-B25 <- mwTensor:::.randMat(1, 25)
-B26 <- mwTensor:::.randMat(1, 15)
-B27 <- mwTensor:::.randMat(1, 26)
-B28 <- mwTensor:::.randMat(1, 16)
-B29 <- mwTensor:::.randMat(1, 27)
-B30 <- mwTensor:::.randMat(1, 17)
-B31 <- mwTensor:::.randMat(1, 28)
-B32 <- mwTensor:::.randMat(1, 18)
-
-# A1 <- .randMat(6, 15)
-# A2 <- .randMat(6, 20)
-# A3 <- .randMat(6, 25)
-# A4 <- .randMat(6, 30)
-# A5 <- .randMat(6, 21)
-# A6 <- .randMat(6, 22)
-# A7 <- .randMat(6, 23)
-# A8 <- .randMat(6, 24)
-# A9 <- .randMat(6, 25)
-# A10 <- .randMat(6, 26)
-# A11 <- .randMat(6, 27)
-# A12 <- .randMat(6, 28)
-# A13 <- .randMat(6, 11)
-# A14 <- .randMat(6, 12)
-# A15 <- .randMat(6, 13)
-# A16 <- .randMat(6, 14)
-# A17 <- .randMat(6, 15)
-# A18 <- .randMat(6, 16)
-# A19 <- .randMat(6, 17)
-# A20 <- .randMat(6, 18)
-
-# B1 <- .randMat(1, 15)
-# B2 <- .randMat(1, 20)
-# B3 <- .randMat(1, 25)
-# B4 <- .randMat(1, 30)
-# B5 <- .randMat(1, 15)
-# B6 <- .randMat(1, 21)
-# B7 <- .randMat(1, 22)
-# B8 <- .randMat(1, 20)
-# B9 <- .randMat(1, 23)
-# B10 <- .randMat(1, 24)
-# B11 <- .randMat(1, 25)
-# B12 <- .randMat(1, 25)
-# B13 <- .randMat(1, 26)
-# B14 <- .randMat(1, 30)
-# B15 <- .randMat(1, 27)
-# B16 <- .randMat(1, 28)
-# B17 <- .randMat(1, 21)
-# B18 <- .randMat(1, 11)
-# B19 <- .randMat(1, 22)
-# B20 <- .randMat(1, 12)
-# B21 <- .randMat(1, 23)
-# B22 <- .randMat(1, 13)
-# B23 <- .randMat(1, 24)
-# B24 <- .randMat(1, 14)
-# B25 <- .randMat(1, 25)
-# B26 <- .randMat(1, 15)
-# B27 <- .randMat(1, 26)
-# B28 <- .randMat(1, 16)
-# B29 <- .randMat(1, 27)
-# B30 <- .randMat(1, 17)
-# B31 <- .randMat(1, 28)
-# B32 <- .randMat(1, 18)
+B1 <- mwTensor:::.randMat(2, 15)
+B2 <- mwTensor:::.randMat(2, 20)
+B3 <- mwTensor:::.randMat(2, 25)
+B4 <- mwTensor:::.randMat(2, 30)
+B5 <- mwTensor:::.randMat(2, 15)
+B6 <- mwTensor:::.randMat(2, 21)
+B7 <- mwTensor:::.randMat(2, 22)
+B8 <- mwTensor:::.randMat(2, 20)
+B9 <- mwTensor:::.randMat(2, 23)
+B10 <- mwTensor:::.randMat(2, 24)
+B11 <- mwTensor:::.randMat(2, 25)
+B12 <- mwTensor:::.randMat(2, 25)
+B13 <- mwTensor:::.randMat(2, 26)
+B14 <- mwTensor:::.randMat(2, 30)
+B15 <- mwTensor:::.randMat(2, 27)
+B16 <- mwTensor:::.randMat(2, 28)
+B17 <- mwTensor:::.randMat(2, 21)
+B18 <- mwTensor:::.randMat(2, 11)
+B19 <- mwTensor:::.randMat(2, 22)
+B20 <- mwTensor:::.randMat(2, 12)
+B21 <- mwTensor:::.randMat(2, 23)
+B22 <- mwTensor:::.randMat(2, 13)
+B23 <- mwTensor:::.randMat(2, 24)
+B24 <- mwTensor:::.randMat(2, 14)
+B25 <- mwTensor:::.randMat(2, 25)
+B26 <- mwTensor:::.randMat(2, 15)
+B27 <- mwTensor:::.randMat(2, 26)
+B28 <- mwTensor:::.randMat(2, 16)
+B29 <- mwTensor:::.randMat(2, 27)
+B30 <- mwTensor:::.randMat(2, 17)
+B31 <- mwTensor:::.randMat(2, 28)
+B32 <- mwTensor:::.randMat(2, 18)
 
 params <- new("CoupledMWCAParams",
     # Data-wise setting
@@ -153,10 +99,10 @@ params <- new("CoupledMWCAParams",
         A6=FALSE, A7=FALSE, A8=FALSE, A9=FALSE, A10=FALSE,
         A11=FALSE, A12=FALSE, A13=FALSE, A14=FALSE, A15=FALSE,
         A16=FALSE, A17=FALSE, A18=FALSE, A19=FALSE, A20=FALSE),
-    common_dims=list(A1=6, A2=6, A3=6, A4=6, A5=6,
-        A6=6, A7=6, A8=6, A9=6, A10=6,
-        A11=6, A12=6, A13=6, A14=6, A15=6,
-        A16=6, A17=6, A18=6, A19=6, A20=6),
+    common_dims=list(A1=7, A2=7, A3=7, A4=7, A5=7,
+        A6=7, A7=7, A8=7, A9=7, A10=7,
+        A11=7, A12=7, A13=7, A14=7, A15=7,
+        A16=7, A17=7, A18=7, A19=7, A20=7),
     common_transpose=list(A1=FALSE, A2=FALSE, A3=FALSE, A4=FALSE, A5=FALSE,
         A6=FALSE, A7=FALSE, A8=FALSE, A9=FALSE, A10=FALSE,
         A11=FALSE, A12=FALSE, A13=FALSE, A14=FALSE, A15=FALSE,
@@ -212,13 +158,13 @@ params <- new("CoupledMWCAParams",
         B21=FALSE, B22=FALSE, B23=FALSE, B24=FALSE, B25=FALSE,
         B26=FALSE, B27=FALSE, B28=FALSE, B29=FALSE, B30=FALSE,
         B31=FALSE, B32=FALSE),
-    specific_dims=list(B1=1, B2=1, B3=1, B4=1, B5=1,
-        B6=1, B7=1, B8=1, B9=1, B10=1,
-        B11=1, B12=1, B13=1, B14=1, B15=1,
-        B16=1, B17=1, B18=1, B19=1, B20=1,
-        B21=1, B22=1, B23=1, B24=1, B25=1,
-        B26=1, B27=1, B28=1, B29=1, B30=1,
-        B31=1, B32=1),
+    specific_dims=list(B1=2, B2=2, B3=2, B4=2, B5=2,
+        B6=2, B7=2, B8=2, B9=2, B10=2,
+        B11=2, B12=2, B13=2, B14=2, B15=2,
+        B16=2, B17=2, B18=2, B19=2, B20=2,
+        B21=2, B22=2, B23=2, B24=2, B25=2,
+        B26=2, B27=2, B28=2, B29=2, B30=2,
+        B31=2, B32=2),
     specific_transpose=list(B1=FALSE, B2=FALSE, B3=FALSE, B4=FALSE, B5=FALSE,
         B6=FALSE, B7=FALSE, B8=FALSE, B9=FALSE, B10=FALSE,
         B11=FALSE, B12=FALSE, B13=FALSE, B14=FALSE, B15=FALSE,
@@ -237,6 +183,6 @@ params <- new("CoupledMWCAParams",
 out <- CoupledMWCA(params)
 expect_equal(is(out), "CoupledMWCAResult")
 
-rec <- .recTensors(out@common_cores, out@common_factors,
+rec <- mwTensor:::.recTensors(out@common_cores, out@common_factors,
     out@common_model)
 expect_equal(length(rec), 13)

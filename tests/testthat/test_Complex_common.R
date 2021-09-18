@@ -1,5 +1,5 @@
-# Xs <- toyModel("coupled_Complex_Easy")
-Xs <- toyModel("coupled_Complex_Hard")
+# Xs <- mwTensor::toyModel("coupled_Complex_Easy")
+Xs <- mwTensor::toyModel("coupled_Complex_Hard")
 Xs[[3]] <- Xs[[3]] + array(rbinom(20*23*24,1000,0.1), dim=c(20,23,24))
 
 A1 <- mwTensor:::.randMat(5, 15)
@@ -50,7 +50,7 @@ params <- new("CoupledMWCAParams",
     mask=list(X1=NULL, X2=NULL, X3=NULL, X4=NULL, X5=NULL, X6=NULL,
         X7=NULL, X8=NULL, X9=NULL, X10=NULL, X11=NULL,
         X12=NULL, X13=NULL),
-    weights=list(X1=1, X2=1, X3=0.05, X4=1, X5=1, X6=1,
+    weights=list(X1=1, X2=1, X3=1e-10, X4=1, X5=1, X6=1,
         X7=1, X8=1, X9=1, X10=1, X11=1,
         X12=1, X13=1),
     # Common Factor Matrices
@@ -106,6 +106,6 @@ params <- new("CoupledMWCAParams",
 out <- CoupledMWCA(params)
 expect_equal(is(out), "CoupledMWCAResult")
 
-rec <- .recTensors(out@common_cores, out@common_factors,
+rec <- mwTensor:::.recTensors(out@common_cores, out@common_factors,
     out@common_model)
 expect_equal(length(rec), 13)

@@ -29,15 +29,15 @@ options(testthat.use_colours = FALSE)
 # source("../R/plotTensor3Ds.R") # comment out
 
 # test_file
-source("testthat/test_mySVD.R")
-source("testthat/test_myALS_SVD.R")
-source("testthat/test_myNMF.R")
-source("testthat/test_myICA.R")
-source("testthat/test_myCX.R")
-source("testthat/test_toyModel.R")
-source("testthat/test_MWCA.R")
-source("testthat/test_CoupledMWCA_common.R")
-source("testthat/test_CoupledMWCA_specific.R")
-source("testthat/test_Complex_common.R") # comment out
-source("testthat/test_Complex_specific.R") # comment out
-source("testthat/test_Complex_eachData.R") # comment out
+test_file("testthat/test_mySVD.R")
+test_file("testthat/test_myALS_SVD.R")
+test_file("testthat/test_myNMF.R")
+test_file("testthat/test_myICA.R")
+test_file("testthat/test_myCX.R")
+test_file("testthat/test_toyModel.R")
+test_file("testthat/test_MWCA.R")
+test_file("testthat/test_CoupledMWCA_common.R")
+test_file("testthat/test_CoupledMWCA_specific.R")
+# test_file("testthat/test_Complex_common.R") # comment out
+# test_file("testthat/test_Complex_specific.R") # comment out
+# test_file("testthat/test_Complex_eachData.R") # comment out
