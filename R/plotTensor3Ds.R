@@ -44,6 +44,8 @@ plotTensor3Ds <- function(Xs){
 
 .SinglePlot <- function(x){
     plot(1, 1, col="white", ann=FALSE, xaxt="n", yaxt="n", axes=FALSE)
+    oldpar <- par(no.readonly = TRUE)
+    on.exit(par(oldpar))
     par(ps=30)
     text(1, 1, x, col="red")
 }
