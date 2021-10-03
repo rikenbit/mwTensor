@@ -147,22 +147,24 @@
 
 .normMat <- function(mat, direction="row"){
     if(ncol(mat) == 1){
-        mat / norm(mat, "F")
+        out <- mat / norm(mat, "F")
     }else{
         if(direction == "row"){
             nom <- apply(mat, 1, function(m){
                 norm(as.matrix(m), "F")
             })
-            mat / nom
+            out <- mat / nom
         }else if(direction == "column"){
             nom <- apply(mat, 2, function(m){
                 norm(as.matrix(m), "F")
             })
-            t(t(mat) / nom)
+            out <- t(t(mat) / nom)
         }else{
             stop("Wrong direction")
         }
     }
+    out[which(is.na(out))] <- 0
+    out
 }
 
 .unitMat <- function(l1, l2){
