@@ -3,6 +3,12 @@
     .checkCoupledMWCA_common(params)
     if(params@specific){
         .checkCoupledMWCA_specific(params)
+        # Iteration Setting
+        max.iter <- max(c(unlist(params@common_iteration),
+            unlist(params@specific_iteration)))
+    }else{
+        # Iteration Setting
+        max.iter <- max(unlist(params@common_iteration))
     }
     .checkCoupledMWCA_other(params)
     # Initialization
@@ -13,10 +19,6 @@
     # 5. Specific Factor matrix-wise setting
     specific_initial <- int$specific_As
     specific_Anames <- names(int$specific_As)
-    # Iteration Setting
-    max.iter <- max(c(unlist(params@common_iteration),
-        unlist(params@specific_iteration)))
-    iter <- 1
     # Visualization
     if(params@viz){
         X_bars <- .recTensors(Ss=int$common_Ss, As=int$common_As,
@@ -31,6 +33,7 @@
         }
     }
     # Iteration
+    iter <- 1
     while ((int$rec_error[iter] > params@thr) && (iter <= max.iter)){
         X_not_tildes <- .subtractList(int$MaskedXs, int$X_tildes)
         # Update Common Factor Matrices
@@ -109,10 +112,10 @@
         int$rel_change[iter] <- abs(int$rec_error[iter-1] - int$rec_error[iter]) /
             int$rec_error[iter]
     }
-    names(int$rec_error) <- c("offset", 1:(iter - 1))
-    names(int$train_error) <- c("offset", 1:(iter - 1))
-    names(int$test_error) <- c("offset", 1:(iter - 1))
-    names(int$rel_change) <- c("offset", 1:(iter - 1))
+    names(int$rec_error) <- c("offset", seq_len(iter))
+    names(int$train_error) <- c("offset", seq_len(iter))
+    names(int$test_error) <- c("offset", seq_len(iter))
+    names(int$rel_change) <- c("offset", seq_len(iter))
     # Visualization
     if(params@viz){
         if(is.null(params@figdir)){
