@@ -112,10 +112,14 @@
         int$rel_change[iter] <- abs(int$rec_error[iter-1] - int$rec_error[iter]) /
             int$rec_error[iter]
     }
-    names(int$rec_error) <- c("offset", seq_len(iter))
-    names(int$train_error) <- c("offset", seq_len(iter))
-    names(int$test_error) <- c("offset", seq_len(iter))
-    names(int$rel_change) <- c("offset", seq_len(iter))
+    names(int$rec_error) <- c("offset",
+        seq_len(length(int$rec_error) - 1))
+    names(int$train_error) <- c("offset",
+        seq_len(length(int$train_error) - 1))
+    names(int$test_error) <- c("offset",
+        seq_len(length(int$test_error) - 1))
+    names(int$rel_change) <- c("offset",
+        seq_len(length(int$rel_change) - 1))
     # Visualization
     if(params@viz){
         if(is.null(params@figdir)){
