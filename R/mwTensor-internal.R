@@ -76,7 +76,6 @@
             As[[x]]
         })
 		S <- Ss[[i]]
-		A <- As[[i]]
 		idx <- seq_along(dim(S))
 		recTensor(S=S, A=SrelatedAs, idx=idx, reverse=reverse)
 	})
