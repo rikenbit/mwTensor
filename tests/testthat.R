@@ -3,7 +3,7 @@ library("MASS")
 library("rTensor")
 library("nnTensor")
 library("ccTensor")
-library("ica")
+library("iTensor")
 library("igraph")
 library("testthat")
 

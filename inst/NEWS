@@ -1,3 +1,7 @@
+VERSION 0.99.6
+------------------------
+   o Dependent package ica is changed to iTensor
+
 VERSION 0.99.2 - 0.99.5
 ------------------------
    o Bug fixed

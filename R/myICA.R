@@ -1,7 +1,7 @@
 myICA <- function(Xn, k){
     if(k == 1){
-        .normMat(icafast(Xn, nc=k+1)$Y, "column")[,1]
+        .normMat(ICA(Xn, J=k+1)$S, "column")[,1]
     }else{
-        .normMat(icafast(Xn, nc=k)$Y, "column")
+        .normMat(ICA(Xn, J=k)$S, "column")
     }
 }

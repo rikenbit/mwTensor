@@ -1,8 +1,8 @@
 Package: mwTensor
 Type: Package
 Title: Multi-Way Component Analysis
-Version: 0.99.5
-Date: 2021-10-12
+Version: 0.99.6
+Date: 2022-6-15
 Authors@R: c(person("Koki", "Tsuyuzaki", role = c("aut", "cre"),
                       email = "k.t.the-answer@hotmail.co.jp"))
 Suggests: testthat
@@ -12,7 +12,7 @@ Imports: methods,
     rTensor,
     nnTensor,
     ccTensor,
-    ica,
+    iTensor,
     igraph
 Description: For single tensor data, any matrix factorization method can be specified the matricised tensor in each dimension by Multi-way Component Analysis (MWCA). An originally extended MWCA is also implemented to specify and decompose multiple matrices and tensors simultaneously (CoupledMWCA). See the reference section of GitHub README.md <https://github.com/rikenbit/mwTensor>, for details of the methods.
 License: Artistic-2.0
