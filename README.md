@@ -1,3 +1,13 @@
+[![DOI](https://zenodo.org/badge/381632949.svg)](https://zenodo.org/badge/latestdoi/381632949)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/mwTensor)](
+https://cran.r-project.org/package=mwTensor)
+[![Downloads](https://cranlogs.r-pkg.org/badges/mwTensor)](https://CRAN.R-project.org/package=mwTensor)
+[![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/mwTensor?color=orange)](https://CRAN.R-project.org/package=mwTensor)
+[![:name status badge](https://rikenbit.r-universe.dev/badges/:name)](https://rikenbit.r-universe.dev)
+[![:registry status badge](https://rikenbit.r-universe.dev/badges/:registry)](https://rikenbit.r-universe.dev)
+[![:total status badge](https://rikenbit.r-universe.dev/badges/:total)](https://rikenbit.r-universe.dev)
+[![mwTensor status badge](https://rikenbit.r-universe.dev/badges/mwTensor)](https://rikenbit.r-universe.dev)
+
 # mwTensor
 R package for Multi-way Component Analysis
 
