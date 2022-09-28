@@ -7,6 +7,7 @@ https://cran.r-project.org/package=mwTensor)
 [![:registry status badge](https://rikenbit.r-universe.dev/badges/:registry)](https://rikenbit.r-universe.dev)
 [![:total status badge](https://rikenbit.r-universe.dev/badges/:total)](https://rikenbit.r-universe.dev)
 [![mwTensor status badge](https://rikenbit.r-universe.dev/badges/mwTensor)](https://rikenbit.r-universe.dev)
+![GitHub Actions](https://github.com/rikenbit/mwTensor/actions/workflows/build_test_push.yml/badge.svg)
 
 # mwTensor
 R package for Multi-way Component Analysis
