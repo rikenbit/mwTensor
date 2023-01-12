@@ -1,6 +1,12 @@
+VERSION 1.0.0
+------------------------
+   o Bug fixed
+   o defaultMWCAParams and defaultCoupledMWCAParams were added
+   o prototype descriptions were removed from MWCAParams and CoupledMWCAParams
+
 VERSION 0.99.6
 ------------------------
-   o Dependent package ica is changed to iTensor
+   o Dependent package ica was changed to iTensor
 
 VERSION 0.99.2 - 0.99.5
 ------------------------

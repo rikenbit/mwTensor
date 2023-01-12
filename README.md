@@ -37,9 +37,5 @@ References
 - **Independent Component Analysis (ICA)**: A. Hyvarinen. Fast and Robust Fixed-Point Algorithms for Independent Component Analysis. IEEE Transactions on Neural Networks, 10(3), 626-634, 1999
 - **CX Decomposition**: Petros Drineas et al., Relative-Error CUR Matrix Decompositions, SIAM Journal on Matrix Analysis and Applications, 30(2), 844-881, 2008
 
-## License
-Copyright (c) 2021 Koki Tsuyuzaki and Laboratory for Bioinformatics Research, RIKEN Center for Biosystems Dynamics Reseach
-Released under the [Artistic License 2.0](https://www.perlfoundation.org/artistic-license-20.html).
-
 ## Authors
 - Koki Tsuyuzaki

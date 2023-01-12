@@ -36,6 +36,8 @@ test_file("testthat/test_myICA.R")
 test_file("testthat/test_myCX.R")
 test_file("testthat/test_toyModel.R")
 test_file("testthat/test_MWCA.R")
+test_file("testthat/test_defaultMWCAParams.R")
+test_file("testthat/test_defaultCoupledMWCAParams.R")
 test_file("testthat/test_CoupledMWCA_common.R")
 test_file("testthat/test_CoupledMWCA_specific.R")
 # test_file("testthat/test_Complex_common.R") # comment out

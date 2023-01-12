@@ -63,7 +63,7 @@
 		j <- which(model_i == keyword)
 		if(length(j) != 0){
 			i_idx <- c(i_idx, i)
-			j_idx <- c(j_idx, j)
+			j_idx <- c(j_idx, j[1])
 		}
 	}
 	list(i=i_idx, j=j_idx)
