@@ -40,6 +40,7 @@ Petros Drineas et al., (2008). Relative-Error CUR Matrix Decompositions, \emph{S
   if(interactive()){
     # Test data
     matdata <- matrix(runif(10*20), nrow=10, ncol=20)
+    # Perform CX
     myCX(matdata, k=3)
   }
 }

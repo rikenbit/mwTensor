@@ -48,6 +48,7 @@ Andrzej CICHOCK, et. al., (2009). Nonnegative Matrix and Tensor Factorizations.
   if(interactive()){
     # Test data
     matdata <- matrix(runif(10*20), nrow=10, ncol=20)
+    # Perform NMF
     myNMF(matdata, k=3, L1=1e-1, L2=1e-2)
   }
 }

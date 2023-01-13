@@ -1,7 +1,7 @@
 Package: mwTensor
 Type: Package
 Title: Multi-Way Component Analysis
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: c(person("Koki", "Tsuyuzaki", role = c("aut", "cre"),
                       email = "k.t.the-answer@hotmail.co.jp"))
 Suggests: testthat

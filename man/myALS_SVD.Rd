@@ -47,6 +47,7 @@ Madeleine Udell et al., (2016). Generalized Low Rank Models, \emph{Foundations a
   if(interactive()){
     # Test data
     matdata <- matrix(runif(10*20), nrow=10, ncol=20)
+    # Perform ALS-SVD
     myALS_SVD(matdata, k=3, L2=0.1, iter=10)
   }
 }

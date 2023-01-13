@@ -36,6 +36,7 @@ The rank parameter (k <= min(N,M))
   if(interactive()){
     # Test data
     matdata <- matrix(runif(10*20), nrow=10, ncol=20)
+    # Perform SVD
     mySVD(matdata, k=3)
   }
 }

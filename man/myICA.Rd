@@ -40,6 +40,7 @@ A. Hyvarinen. (1999). Fast and Robust Fixed-Point Algorithms for Independent Com
   if(interactive()){
     # Test data
     matdata <- matrix(runif(10*20), nrow=10, ncol=20)
+    # Perform ICA
     myICA(matdata, k=3)
   }
 }

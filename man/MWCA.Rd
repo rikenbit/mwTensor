@@ -39,8 +39,9 @@ Andrzej Cichocki et al., (2015). Tensor Decompositions for Signal Processing App
   if(interactive()){
   	# Test data (single array)
     X <- nnTensor::toyModel("Tucker")@data
-
-    params <- new("MWCAParams", X=X)
+    # Default Parameters
+    params <- defaultMWCAParams(X)
+    # Perform MWCA
     out <- MWCA(params)
   }
 }
