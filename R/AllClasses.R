@@ -3,6 +3,7 @@ setClass("MWCAParams",
     representation=representation(
         X="array",
         mask="ANY",
+        pseudocount="numeric",
         algorithms="character",
         dims="numeric",
         transpose="logical",
@@ -17,6 +18,7 @@ setClass("CoupledMWCAParams",
         # 1. Data-wise setting
         Xs="list",
         mask="list",
+        pseudocount="numeric",
         weights="list",
         # 2. Common Model setting
         common_model="list",

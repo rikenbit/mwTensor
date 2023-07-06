@@ -5,9 +5,11 @@
     int <- .initMWCA(params)
     # Setting
     X <- as.tensor(params@X)
-    M <- as.tensor(int$mask)
-    A <- int$initial
-    S <- int$core
+    M <- as.tensor(int$M)
+    pM <- as.tensor(int$pM)
+    M_NA <- as.tensor(int$M_NA)
+    A <- int$A
+    S <- int$S
     algorithms <- params@algorithms
     f <- lapply(algorithms, function(a){eval(parse(text=a))})
     dims <- params@dims
@@ -17,16 +19,16 @@
     # Update Factor Matrices
     for(n in seq_along(dim(X))){
         Xn <- t(cs_unfold(X, m = n)@data)
-        Mn <- t(cs_unfold(M, m = n)@data)
-        A[[n]] <- t(f[[n]](Xn*Mn, dims[n]))
+        pMn <- t(cs_unfold(pM, m = n)@data)
+        A[[n]] <- t(f[[n]](Xn*pMn, dims[n]))
     }
     # Update Core Tensor
     S <- .Projection(X@data, A, transpose=transpose)
     # After Update
     X_bar <- recTensor(S=S, A=A)
     rec_error <- .recError(X, X_bar)
-    train_error <- .recError(M*X, M*X_bar)
-    test_error <- .recError((1-M)*X, (1-M)*X_bar)
+    train_error <- .recError((1-M_NA+M)*X, (1-M_NA+M)*X_bar)
+    test_error <- .recError((M_NA-M)*X, (M_NA-M)*X_bar)
     # Visualization
     if(viz){
         if(.ndim(X) != 3){

@@ -21,6 +21,7 @@ Objects can be created by calls of the form \code{new("CoupledMWCAParams", ...)}
 
     \item{Xs:}{A list containing multiple high-dimensional arrays.}
     \item{mask:}{A list containing multiple high-dimensional arrays, in which 0 or 1 values are filled to specify the missing elements.}
+    \item{pseudocount:}{The pseudo count to avoid zero division, when the element is zero (Default: Machine Epsilon).}
     \item{weights:}{A list containing multiple high-dimensional arrays, in which some numeric values are specified to weigth each data.}
 
     \emph{2. Common Model setting}

@@ -15,6 +15,7 @@ Objects can be created by calls of the form \code{new("MWCAParams", ...)}.
    \describe{
     \item{X:}{A high-dimensional array.}
     \item{mask:}{A mask array having the same dimension of X.}
+    \item{pseudocount:}{The pseudo count to avoid zero division, when the element is zero (Default: Machine Epsilon).}
     \item{algorithms:}{Algorithms used to decompose the matricised tensor in each mode.}
     \item{dims:}{The lower dimension of each factor matrix.}
     \item{transpose:}{Whether the factor matrix is transposed to calculate core tensor.}

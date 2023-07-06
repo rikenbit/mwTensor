@@ -49,9 +49,9 @@
         v <- vec(Y - X)
     }
     if(notsqrt){
-        sum(v * v)
+        sum(v * v, na.rm=TRUE)
     }else{
-        sqrt(sum(v * v))
+        sqrt(sum(v * v, na.rm=TRUE))
     }
 }
 

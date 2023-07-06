@@ -11,6 +11,7 @@ defaultCoupledMWCAParams <- function(Xs, common_model){
         # 1. Data-wise setting
         Xs=Xs,
         mask=.defaultListXs(Xs, Xnames),
+        pseudocount=.Machine$double.eps,
         weights=.defaultListXs(Xs, Xnames, 1),
         # 2. Common Model setting
         common_model=common_model,

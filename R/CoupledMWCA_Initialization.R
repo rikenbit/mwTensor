@@ -3,8 +3,26 @@
     mask <- .initCoupledMWCA_mask(params)
     # Data Formatting
     Xs <- lapply(params@Xs, as.tensor)
-    Ms <- lapply(mask, as.tensor)
-    MaskedXs <- .multiplyList(Xs, Ms)
+    M_NAs <- Xs
+    Ms <- list()
+    length(Ms) <- length(Xs)
+    for(i in seq_along(M_NAs)){
+        M_NAs[[i]]@data[] <- 1
+        M_NAs[[i]]@data[which(is.na(Xs[[i]]@data))] <- 0
+        if(is.null(params@mask[[i]])){
+            Ms[[i]] <- M_NAs[[i]]@data
+        }else{
+            Ms[[i]] <- mask[[i]]
+        }
+    }
+    pMs <- Ms
+    # Pseudo count
+    for(i in seq_along(Xs)){
+        Xs[[i]]@data[which(is.na(Xs[[i]]@data))] <- params@pseudocount
+        Xs[[i]]@data[which(Xs[[i]]@data == 0)] <- params@pseudocount
+        pMs[[i]][which(pMs[[i]] == 0)] <- params@pseudocount
+    }
+    MaskedXs <- .multiplyList(Xs, pMs)
     #
     # Common Objects
     #
@@ -59,7 +77,8 @@
         common_As=common_As, specific_As=specific_As,
         common_Ss=common_Ss, specific_Ss=specific_Ss,
         X_tildes=X_tildes,
-        Xs=Xs, Ms=Ms, MaskedXs=MaskedXs,
+        Xs=Xs, Ms=Ms, pMs=pMs, M_NAs=M_NAs,
+        MaskedXs=MaskedXs,
         rec_error=rec_error, train_error=train_error,
         test_error=test_error, rel_change=rel_change)
 }

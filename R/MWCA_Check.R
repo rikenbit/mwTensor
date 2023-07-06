@@ -7,6 +7,8 @@
     .checkMWCA_X(params)
     # mask
     .checkMWCA_mask(params, dd)
+    # Pseudo count
+    stopifnot(is.numeric(params@pseudocount))
     # dims
     .checkMWCA_dims(params, len_dd, dd, ld)
     # figdir

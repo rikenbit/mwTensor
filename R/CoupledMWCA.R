@@ -105,10 +105,13 @@
         iter <- iter + 1
         int$rec_error[iter] <- .recErrors(int$MaskedXs, X_bars) +
             .recErrors(int$MaskedXs, int$X_tildes)
-        int$train_error[iter] <- .recErrors(int$MaskedXs, X_bars, int$Ms) +
-            .recErrors(int$MaskedXs, int$X_tildes, int$Ms)
-        int$test_error[iter] <- .recErrors(int$MaskedXs, X_bars, int$Ms, minus=TRUE) +
-            .recErrors(int$MaskedXs, int$X_tildes, int$Ms, minus=TRUE)
+
+        int$train_error[iter] <- .recErrors(int$MaskedXs, X_bars, int$Ms, int$M_NAs, "test") +
+            .recErrors(int$MaskedXs, int$X_tildes, int$Ms, int$M_NAs, "test")
+
+        int$test_error[iter] <- .recErrors(int$MaskedXs, X_bars, int$Ms, int$M_NAs, "test") +
+            .recErrors(int$MaskedXs, int$X_tildes, int$Ms, int$M_NAs, "test")
+
         int$rel_change[iter] <- abs(int$rec_error[iter-1] - int$rec_error[iter]) /
             int$rec_error[iter]
     }
@@ -282,7 +285,7 @@
     }
 }
 
-.recErrors <- function(Xs, Ys, Ms=NULL, minus=FALSE){
+.recErrors <- function(Xs, Ys, Ms=NULL, M_NAs=NULL, type="train"){
     if(is.null(Ms)){
         out <- lapply(seq_along(Xs), function(i){
             .recError(Xs[[i]], Ys[[i]])
@@ -290,10 +293,13 @@
     }else{
         out <- lapply(seq_along(Xs), function(i){
             M <- Ms[[i]]
-            if(minus){
-                M <- 1 - M
+            M_NA <- M_NAs[[i]]
+            if(type == "train"){
+                MM <- 1 - M_NA + M
+            }else{
+                MM <- M_NA - M
             }
-            .recError(M*Xs[[i]], M*Ys[[i]])
+            .recError(MM*Xs[[i]], MM*Ys[[i]])
         })
     }
     sum(unlist(out))

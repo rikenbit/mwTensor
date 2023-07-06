@@ -4,6 +4,7 @@ params <- new("CoupledMWCAParams",
     # 1. Data-wise setting
     Xs=Xs,
     mask=list(X1=NULL, X2=NULL, X3=NULL),
+    pseudocount=1E-10,
     weights=list(X1=1, X2=1, X3=1),
     # 2. Common Model setting
     common_model=list(

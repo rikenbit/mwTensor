@@ -21,6 +21,8 @@
     .checkCoupledMWCA_Xs_common(params, uniqIsnames, Isnames, XsSizes)
     # 5. mask
     .checkCoupledMWCA_mask_common(params, XsSizes)
+    # Pseudo count
+    stopifnot(is.numeric(params@pseudocount))
     # 6. weights
     .checkCoupledMWCA_weights_common(params)
     # 7. initial
