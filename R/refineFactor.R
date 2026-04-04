@@ -43,8 +43,9 @@
 #'   integer index into the factors list.
 #' @param algorithm Character. One of the built-in decomposition function
 #'   names (\code{"mySVD"}, \code{"myALS_SVD"}, \code{"myNMF"},
-#'   \code{"myICA"}, \code{"myCX"}) or any function in the global
-#'   environment with signature \code{f(Xn, k)}.
+#'   \code{"myICA"}, \code{"myCX"}) or any function accessible on the
+#'   R search path (loaded packages or global environment) with
+#'   signature \code{f(Xn, k)}.
 #' @param dim Integer. Target lower dimension for the refinement.
 #' @return A \code{RefinedFactor} object with slots:
 #' \describe{

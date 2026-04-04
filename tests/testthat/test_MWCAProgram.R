@@ -348,3 +348,20 @@ v_ref_undef <- validateMWCAProgram(prog_ref_undef)
 expect_false(v_ref_undef$ok)
 expect_true(any(grepl("undefined factor", v_ref_undef$errors)))
 expect_true(any(grepl("MISSING_FACTOR", v_ref_undef$errors)))
+
+# ============================================================
+# 24. executeMWCAProgram: refinement with dim too large
+#     errors at runtime (propagated from refineFactor)
+# ============================================================
+prog_ref_bad_dim <- MWCAProgram(
+    blocks=prog$blocks,
+    factors=prog$factors,
+    refinements=list(
+        R1=MWCAProgramRefinement(source_factor="A2",
+            algorithm="mySVD", dim=999)))
+# Passes validation (no data dimensions to check at program level)
+v_ref_bad_dim <- validateMWCAProgram(prog_ref_bad_dim)
+expect_true(v_ref_bad_dim$ok)
+# Fails at execution time when refineFactor checks dim vs factor shape
+expect_error(executeMWCAProgram(prog_ref_bad_dim, Xs),
+    "exceeds")

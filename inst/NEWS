@@ -1,3 +1,13 @@
+VERSION 1.2.2
+------------------------
+   o refineFactor: @param algorithm doc corrected to say
+     "R search path" instead of "global environment"
+   o MWCAProgramRefinement: roxygen now explicitly states
+     one-step only / depth > 1 not supported
+   o Tests: added user-supplied function algorithm test for
+     refineFactor; added runtime dim-exceeds error propagation
+     test for executeMWCAProgram
+
 VERSION 1.2.1
 ------------------------
    o refineFactor: replaced eval(parse()) with match.fun() for

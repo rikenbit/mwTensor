@@ -166,3 +166,19 @@ expect_error(refineFactor("not_a_fit", 1L, algorithm="mySVD", dim=2L),
 # gives a clear error.
 expect_error(refineFactor(fit_coupled, "B1", algorithm="mySVD", dim=2L),
     "not found")
+
+# ============================================================
+# 15. User-supplied function as algorithm (match.fun resolution)
+# ============================================================
+# Define a custom algorithm with the standard f(Xn, k) signature
+.test_custom_algo <- function(Xn, k){
+    svd(Xn, nu=k, nv=0)$u[, seq_len(k), drop=FALSE]
+}
+# Assign to global env so match.fun can find it
+assign(".test_custom_algo", .test_custom_algo, envir=globalenv())
+ref_custom <- refineFactor(fit_mat, 1L,
+    algorithm=".test_custom_algo", dim=2L)
+expect_true(is(ref_custom, "RefinedFactor"))
+expect_equal(dim(ref_custom@sub_factors), c(2L, 20L))
+expect_equal(dim(ref_custom@coef), c(5L, 2L))
+rm(".test_custom_algo", envir=globalenv())

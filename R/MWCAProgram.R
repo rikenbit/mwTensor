@@ -87,9 +87,14 @@ MWCAProgramFactor <- function(mode, dim, status="decomposed",
 #' Create a refinement descriptor
 #'
 #' Specifies that a factor from the parent decomposition should itself
-#' be decomposed in a one-step sub-decomposition.
+#' be decomposed in a one-step sub-decomposition. Only one level of
+#' refinement is supported: you cannot refine the output of another
+#' refinement (depth > 1). Full recursive optimization is not
+#' implemented.
 #'
 #' @param source_factor Character. Name of the factor to refine.
+#'   Must refer to a base factor defined in the program's
+#'   \code{factors} list, not another refinement output.
 #' @param algorithm Character. Algorithm for the sub-decomposition.
 #' @param dim Integer. Target dimension for the sub-decomposition.
 #' @return A list with class \code{"MWCAProgramRefinement"}.
