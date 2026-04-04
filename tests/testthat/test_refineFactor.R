@@ -146,3 +146,23 @@ expect_true(is(ref@source_object, "MWCAResult"))
 ref_dim1 <- refineFactor(fit_mat, 1L, algorithm="mySVD", dim=1L)
 expect_equal(dim(ref_dim1@sub_factors), c(1L, 20L))
 expect_equal(dim(ref_dim1@coef), c(5L, 1L))
+
+# ============================================================
+# 12. Non-character algorithm (numeric) -> error
+# ============================================================
+expect_error(refineFactor(fit_mat, 1L, algorithm=42, dim=2L))
+
+# ============================================================
+# 13. Invalid fit object -> error
+# ============================================================
+expect_error(refineFactor("not_a_fit", 1L, algorithm="mySVD", dim=2L),
+    "MWCAResult or CoupledMWCAResult")
+
+# ============================================================
+# 14. Coupled: factor from specific_factors is accessible
+# ============================================================
+# fit_coupled was set up with specific=FALSE, so specific_factors
+# are empty. Test that requesting a non-existent specific factor
+# gives a clear error.
+expect_error(refineFactor(fit_coupled, "B1", algorithm="mySVD", dim=2L),
+    "not found")

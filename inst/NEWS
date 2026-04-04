@@ -1,3 +1,22 @@
+VERSION 1.2.1
+------------------------
+   o refineFactor: replaced eval(parse()) with match.fun() for
+     safer algorithm resolution
+   o initCoupledMWCA: improved seed management (on.exit with
+     add=TRUE, seed registration before validation for robust
+     RNG state restoration on error)
+   o validateMWCAProgram: added refinement name vs factor name
+     collision check; added duplicate refinement warning;
+     clarified depth > 1 check semantics
+   o compileMWCAProgram: documented dummy factor necessity
+     (CoupledMWCAParams requires models to cover all Xs)
+   o executeMWCAProgram: documented two-phase architecture
+     and proof-of-concept status
+   o Tests: added tests for seed=NULL behavior, on.exit
+     restoration, refinement name collision, duplicate
+     refinement, dummy factor verification, single-block
+     execute, invalid algorithm/fit object handling
+
 VERSION 1.2.0
 ------------------------
    o checkCoupledMWCA was added for static validation of CoupledMWCAParams

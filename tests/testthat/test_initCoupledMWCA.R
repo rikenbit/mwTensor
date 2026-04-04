@@ -180,3 +180,29 @@ init_svd_run <- initCoupledMWCA(params, seed=42L, init_policy="svd")
 out_svd <- CoupledMWCA(init_svd_run)
 expect_true(is(out_svd, "CoupledMWCAResult"))
 expect_equal(length(out_svd@common_factors), 5)
+
+# -------------------------------------------
+# 18. seed=NULL does not manage RNG (no side effects)
+# -------------------------------------------
+set.seed(777L)
+r1 <- runif(1)
+set.seed(777L)
+init_noseed <- initCoupledMWCA(params, seed=NULL)
+r2 <- runif(1)
+# Without seed management, the RNG will have advanced during init,
+# so r2 should differ from r1 (init consumed random numbers)
+expect_true(is(init_noseed, "CoupledMWCAInit"))
+expect_null(init_noseed@seed)
+
+# -------------------------------------------
+# 19. on.exit restores seed even if init errors
+# -------------------------------------------
+set.seed(888L)
+ref_val <- runif(1)
+set.seed(888L)
+tryCatch(
+    initCoupledMWCA(params, seed=42L, init_policy="bogus"),
+    error=function(e) NULL)
+after_val <- runif(1)
+expect_equal(ref_val, after_val,
+    info="RNG state should be restored even after init error")

@@ -38,27 +38,31 @@ setMethod("initCoupledMWCA",
     })
 
 .initCoupledMWCA_public <- function(params, seed, init_policy){
+    # Seed management: save and restore the global RNG state so that
+    # callers' RNG sequences are not perturbed by our seeded run.
+    # Registered BEFORE validation so that on.exit fires even if
+    # subsequent checks fail.
+    if(!is.null(seed)){
+        if(exists(".Random.seed", envir=globalenv())){
+            old_seed <- get(".Random.seed", envir=globalenv())
+        } else {
+            old_seed <- NULL
+        }
+        on.exit({
+            if(is.null(old_seed)){
+                rm(".Random.seed", envir=globalenv())
+            } else {
+                assign(".Random.seed", old_seed, envir=globalenv())
+            }
+        }, add=TRUE)
+        set.seed(seed)
+    }
+
     # Validate init_policy
     valid_policies <- c("random", "svd", "nonneg_random")
     if(!(init_policy %in% valid_policies)){
         stop(paste0("init_policy must be one of: ",
             paste(valid_policies, collapse=", ")))
-    }
-
-    # Seed management
-    old_seed <- NULL
-    if(!is.null(seed)){
-        if(exists(".Random.seed", envir=.GlobalEnv)){
-            old_seed <- get(".Random.seed", envir=.GlobalEnv)
-        }
-        set.seed(seed)
-        on.exit({
-            if(is.null(old_seed)){
-                rm(".Random.seed", envir=.GlobalEnv)
-            } else {
-                assign(".Random.seed", old_seed, envir=.GlobalEnv)
-            }
-        })
     }
 
     # Prepare masked data (same as existing .initCoupledMWCA)

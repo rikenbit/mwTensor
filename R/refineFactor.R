@@ -75,15 +75,20 @@ refineFactor <- function(fit, factor_name, algorithm="mySVD", dim=2L){
     source_factor <- .extractFactor(fit, factor_name)
     factor_label <- as.character(factor_name)
 
-    # --- Validate algorithm ---
-    builtin <- c("mySVD", "myALS_SVD", "myNMF", "myICA", "myCX")
-    if(!(algorithm %in% builtin)){
-        if(!exists(algorithm, envir=.GlobalEnv, mode="function")){
-            stop(paste0("Algorithm '", algorithm,
-                "' is not a built-in or a function in .GlobalEnv"))
+    # --- Resolve algorithm function ---
+    # Built-in algorithms are exported from this package. User-supplied
+    # algorithm names are resolved via match.fun(), which searches the
+    # standard R search path (package namespaces, global environment).
+    f <- tryCatch(
+        match.fun(algorithm),
+        error = function(e){
+            stop(paste0(
+                "Algorithm '", algorithm, "' is not a built-in or ",
+                "accessible function. Built-in algorithms: ",
+                "mySVD, myALS_SVD, myNMF, myICA, myCX"),
+                call.=FALSE)
         }
-    }
-    f <- eval(parse(text=algorithm))
+    )
 
     # --- Validate dim ---
     dim <- as.integer(dim)

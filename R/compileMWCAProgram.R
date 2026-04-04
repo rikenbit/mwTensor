@@ -1,12 +1,25 @@
-#' Compile an MWCAProgram to Solver Parameters
+#' Compile an MWCAProgram to Solver Parameters (Experimental)
 #'
 #' Converts a validated, non-recursive \code{MWCAProgram} into
-#' \code{MWCAParams} (single-block, no refinements) or
-#' \code{CoupledMWCAParams} (multi-block, no refinements).
+#' \code{MWCAParams} (single-block) or \code{CoupledMWCAParams}
+#' (multi-block). Only the base decomposition is compiled;
+#' refinements are handled separately by \code{\link{executeMWCAProgram}}.
 #'
-#' Programs with refinements cannot currently be compiled; this
-#' function will error. Refinement compilation is reserved for
-#' future recursive decomposition support.
+#' \strong{Why refinements are excluded from compilation:}
+#' Refinements are a post-hoc operation applied to factor matrices
+#' \emph{after} the main decomposition. The solver parameters
+#' (\code{MWCAParams}/\code{CoupledMWCAParams}) have no concept of
+#' refinement. To run a program with refinements, use
+#' \code{executeMWCAProgram}, which compiles the base program, runs
+#' the solver, and then applies refinements via \code{refineFactor}.
+#'
+#' \strong{Dummy factors:} The \code{CoupledMWCAParams} solver
+#' requires that \code{common_model} and \code{specific_model} each
+#' cover every entry in \code{Xs}. When a block only has common (or
+#' only specific) factors, the compiler inserts identity-like
+#' ("frozen") dummy factors for the missing model. These dummy
+#' factors have \code{dim=1} and \code{decomp=FALSE}, so they act
+#' as pass-through and do not affect the decomposition result.
 #'
 #' @param program An \code{MWCAProgram} object.
 #' @param Xs Named list of input arrays, matching block names.
@@ -119,7 +132,11 @@ compileMWCAProgram <- function(program, Xs, ...){
         model_entry <- as.list(block$factor_map[block$modes])
         common_model[[bname]] <- model_entry
     }
-    # Add dummy common model entries for blocks that only have specific factors
+    # --- Dummy common factors for specific-only blocks ---
+    # CoupledMWCAParams requires common_model to cover ALL Xs entries.
+    # For blocks that only have specific factors, we insert frozen
+    # (decomp=FALSE, dim=1) dummy common factors. These act as
+    # identity pass-through and do not affect decomposition results.
     for(bname in block_names){
         if(!(bname %in% names(common_model))){
             block <- program$blocks[[bname]]
@@ -159,11 +176,10 @@ compileMWCAProgram <- function(program, Xs, ...){
             model_entry <- as.list(block$factor_map[block$modes])
             specific_model[[bname]] <- model_entry
         }
-        # Ensure specific_model covers all Xs
+        # --- Dummy specific factors for common-only blocks ---
+        # Same constraint as above: specific_model must cover ALL Xs.
         for(bname in block_names){
             if(!(bname %in% names(specific_model))){
-                # Add empty specific model for blocks without specific factors
-                # Need dummy modes - use block's modes with unique specific factor names
                 block <- program$blocks[[bname]]
                 n_modes <- length(block$modes)
                 dummy_Jnames <- paste0("J_", bname, "_", seq_len(n_modes))

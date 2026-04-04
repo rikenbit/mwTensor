@@ -165,7 +165,21 @@ validateMWCAProgram <- function(program){
         }
     }
 
-    # Refinement source_factor must exist
+    # Refinement names must not collide with factor names.
+    # Refinements produce RefinedFactor objects keyed by their name;
+    # if a refinement shares a name with a factor, references become
+    # ambiguous (is "A2" the base factor or the refinement output?).
+    if(length(refinements) > 0){
+        name_collision <- intersect(names(refinements), all_factor_names)
+        if(length(name_collision) > 0){
+            errors <- c(errors, paste0(
+                "Refinement name(s) collide with factor name(s): ",
+                paste(name_collision, collapse=", "),
+                ". Use distinct names for refinements."))
+        }
+    }
+
+    # Refinement source_factor must reference a defined factor
     for(rname in names(refinements)){
         ref <- refinements[[rname]]
         if(!(ref$source_factor %in% all_factor_names)){
@@ -175,15 +189,31 @@ validateMWCAProgram <- function(program){
         }
     }
 
-    # Refinement depth check: no refinement may target a factor
-    # that is itself produced by another refinement (depth > 1)
-    refinement_outputs <- names(refinements)
-    for(rname in names(refinements)){
-        if(refinements[[rname]]$source_factor %in% refinement_outputs){
+    # Depth check: a refinement's source_factor must be a base factor
+    # from the program, not the output of another refinement.
+    # Since refinement outputs are keyed by refinement name, depth > 1
+    # would mean one refinement's source_factor equals another
+    # refinement's name (i.e., trying to refine a refinement's output).
+    refinement_names <- names(refinements)
+    for(rname in refinement_names){
+        src <- refinements[[rname]]$source_factor
+        if(src %in% refinement_names){
             errors <- c(errors, paste0(
-                "Refinement '", rname, "' targets factor '",
-                refinements[[rname]]$source_factor,
-                "' which is itself a refinement output (depth > 1 not supported)"))
+                "Refinement '", rname, "' targets '", src,
+                "' which is itself a refinement output ",
+                "(depth > 1 not supported)"))
+        }
+    }
+
+    # Warn if multiple refinements target the same source factor
+    if(length(refinements) >= 2){
+        src_factors <- vapply(refinements, function(r) r$source_factor,
+            character(1))
+        dup_src <- src_factors[duplicated(src_factors)]
+        if(length(dup_src) > 0){
+            warnings <- c(warnings, paste0(
+                "Multiple refinements target the same factor: ",
+                paste(unique(dup_src), collapse=", ")))
         }
     }
 
