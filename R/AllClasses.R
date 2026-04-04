@@ -109,3 +109,31 @@ setClass("CoupledMWCAResult",
         rel_change="numeric"
     )
 )
+
+## Class to hold one-step factor refinement result (experimental)
+## sub_factors (dim x n): refined sub-basis vectors
+## coef (k x dim): coefficients s.t. source_factor ~ coef %*% sub_factors
+setClass("RefinedFactor",
+    representation=representation(
+        source_object="ANY",
+        source_factor_name="character",
+        source_factor="matrix",
+        algorithm="character",
+        dim="integer",
+        sub_factors="matrix",
+        coef="matrix"
+    )
+)
+
+## Class to hold CoupledMWCA initialization result
+setClass("CoupledMWCAInit",
+    representation=representation(
+        params="CoupledMWCAParams",
+        common_factors="list",
+        common_cores="list",
+        specific_factors="list",
+        specific_cores="list",
+        init_policy="character",
+        seed="ANY"
+    )
+)

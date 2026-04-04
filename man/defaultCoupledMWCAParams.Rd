@@ -32,7 +32,7 @@ Andrzej Cichocki et al., (2015). Tensor Decompositions for Signal Processing App
 \author{Koki Tsuyuzaki}
 
 \seealso{
-\code{\link{CoupledMWCAParams-class}} and \code{\link{MWCAResult-class}}.
+\code{\link{CoupledMWCAParams-class}}, \code{\link{CoupledMWCA}}, \code{\link{checkCoupledMWCA}}, \code{\link{initCoupledMWCA}}.
 }
 
 \examples{

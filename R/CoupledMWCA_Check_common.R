@@ -38,12 +38,6 @@
     .checkCoupledMWCA_coretype_common(params)
 }
 
-.IsSizes <- function(XsSizes, common_Isnames){
-    out <- unlist(XsSizes)
-    names(out) <- common_Isnames
-    out
-}
-
 # OptionStructure: List structure Check
 .common_factorItems <- c("common_initial", "common_algorithms", "common_iteration",
     "common_decomp", "common_fix", "common_dims", "common_transpose")
@@ -182,70 +176,27 @@
 }
 
 .checkCoupledMWCA_ranks_matrix <- function(params, common_As_Is_Dims_IsSizes){
-    lapply(seq_along(params@common_model), function(i){
-        x <- params@common_model[[i]]
-        if(length(x) == 2){
-            target <- unlist(lapply(x, function(xx){
-                which(common_As_Is_Dims_IsSizes$uniq_common_Asnames == xx)
-            }))
-            if(!.all.equal(common_As_Is_Dims_IsSizes$common_Dims[target])){
-                msg <- paste0("params@common_model[[", i, "]] is a matrix.")
-                msg <- paste(c(msg, "In such a case, the lower dimension of ",
-                    paste(common_As_Is_Dims_IsSizes$uniq_common_Asnames[target], collapse=", ")
-                    , "must be the same number in params@common_dims."), collapse=" ")
-                stop(msg)
-            }
-        }
-    })
+    info <- data.frame(
+        Asnames=common_As_Is_Dims_IsSizes$uniq_common_Asnames,
+        Dims=common_As_Is_Dims_IsSizes$common_Dims,
+        IsSizes=common_As_Is_Dims_IsSizes[,4])
+    .checkRanks_matrix(params@common_model, info)
 }
 
 .checkCoupledMWCA_ranks_one <- function(params, common_As_Is_Dims_IsSizes){
-    lapply(seq_along(params@common_model), function(i){
-        x <- params@common_model[[i]]
-        target <- unlist(lapply(x, function(xx){
-            which(common_As_Is_Dims_IsSizes$uniq_common_Asnames == xx)
-        }))
-        dim_low <- common_As_Is_Dims_IsSizes$common_Dims[target]
-        if(1 %in% dim_low){
-            not1 <- dim_low[setdiff(seq_along(dim_low), which(dim_low == 1))]
-            if(!.all.equal(not1)){
-                msg <- paste0(c("The lower dimension 1 is specified",
-                    "as at least one of",
-                    paste(common_As_Is_Dims_IsSizes$uniq_common_Asnames[target], collapse=", ")
-                    ), collapse=" ")
-                msg <- paste0(msg, " to decompose a ",
-                    "higher-order tensor (length(dim(X)) >= 3). ",
-                    "In such a case, all the other lower dimensions ",
-                    "must be the same number in params@common_dims.")
-                stop(msg)
-            }
-        }
-    })
+    info <- data.frame(
+        Asnames=common_As_Is_Dims_IsSizes$uniq_common_Asnames,
+        Dims=common_As_Is_Dims_IsSizes$common_Dims,
+        IsSizes=common_As_Is_Dims_IsSizes[,4])
+    .checkRanks_one(params@common_model, info)
 }
 
 .checkCoupledMWCA_ranks_projected <- function(params, common_As_Is_Dims_IsSizes){
-    lapply(seq_along(params@common_model), function(i){
-        x <- params@common_model[[i]]
-        target <- unlist(lapply(x, function(xx){
-            which(common_As_Is_Dims_IsSizes$uniq_common_Asnames == xx)
-        }))
-        dim_high <- common_As_Is_Dims_IsSizes$IsSizes[target]
-        dim_low <- common_As_Is_Dims_IsSizes$common_Dims[target]
-        dim_idx <- seq_along(dim_low)
-        dim_proj <- unlist(lapply(dim_idx, function(d){
-            prod(dim_low[setdiff(dim_idx, d)])
-        }))
-        if(!all(dim_proj >= dim_low)){
-            msg <- paste0("After the projection of ",
-                names(params@common_model)[i],
-                ", the dimension is smaller than at least one of ",
-                paste(common_As_Is_Dims_IsSizes$uniq_common_Asnames[target], collapse=", "),
-                " in a dimension. Change the lower dimension of ",
-                paste(common_As_Is_Dims_IsSizes$uniq_common_Asnames[target], collapse=", "),
-                " in params@common_dims.")
-            stop(msg)
-        }
-    })
+    info <- data.frame(
+        Asnames=common_As_Is_Dims_IsSizes$uniq_common_Asnames,
+        Dims=common_As_Is_Dims_IsSizes$common_Dims,
+        IsSizes=common_As_Is_Dims_IsSizes[,4])
+    .checkRanks_projected(params@common_model, info)
 }
 
 # coretype: Value Check

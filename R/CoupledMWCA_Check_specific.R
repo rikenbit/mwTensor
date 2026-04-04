@@ -38,12 +38,6 @@
     .checkCoupledMWCA_coretype_specific(params)
 }
 
-.IsSizes <- function(XsSizes, specific_Isnames){
-    out <- unlist(XsSizes)
-    names(out) <- specific_Isnames
-    out
-}
-
 # OptionStructure: List structure Check
 .specific_factorItems <- c("specific_initial", "specific_algorithms", "specific_iteration",
     "specific_decomp", "specific_fix", "specific_dims", "specific_transpose")
@@ -174,78 +168,35 @@
 # ranks: Mathematically Inpossible Values Check
 .checkCoupledMWCA_ranks_specific <- function(params, specific_As_Is_Dims_IsSizes){
     # Check: Matrix Case
-    .checkCoupledMWCA_ranks_matrix(params, specific_As_Is_Dims_IsSizes)
+    .checkCoupledMWCA_ranks_matrix_specific(params, specific_As_Is_Dims_IsSizes)
     # Check: Tensor Case 1
-    .checkCoupledMWCA_ranks_one(params, specific_As_Is_Dims_IsSizes)
+    .checkCoupledMWCA_ranks_one_specific(params, specific_As_Is_Dims_IsSizes)
     # Check: Tensor Case 2
-    .checkCoupledMWCA_ranks_projected(params, specific_As_Is_Dims_IsSizes)
+    .checkCoupledMWCA_ranks_projected_specific(params, specific_As_Is_Dims_IsSizes)
 }
 
-.checkCoupledMWCA_ranks_matrix <- function(params, specific_As_Is_Dims_IsSizes){
-    lapply(seq_along(params@specific_model), function(i){
-        x <- params@specific_model[[i]]
-        if(length(x) == 2){
-            target <- unlist(lapply(x, function(xx){
-                which(specific_As_Is_Dims_IsSizes$uniq_specific_Asnames == xx)
-            }))
-            if(!.all.equal(specific_As_Is_Dims_IsSizes$specific_Dims[target])){
-                msg <- paste0("params@specific_model[[", i, "]] is a matrix.")
-                msg <- paste(c(msg, "In such a case, the lower dimension of ",
-                    paste(specific_As_Is_Dims_IsSizes$uniq_specific_Asnames[target], collapse=", ")
-                    , "must be the same number in params@specific_dims."), collapse=" ")
-                stop(msg)
-            }
-        }
-    })
+.checkCoupledMWCA_ranks_matrix_specific <- function(params, specific_As_Is_Dims_IsSizes){
+    info <- data.frame(
+        Asnames=specific_As_Is_Dims_IsSizes$uniq_specific_Asnames,
+        Dims=specific_As_Is_Dims_IsSizes$specific_Dims,
+        IsSizes=specific_As_Is_Dims_IsSizes[,4])
+    .checkRanks_matrix(params@specific_model, info)
 }
 
-.checkCoupledMWCA_ranks_one <- function(params, specific_As_Is_Dims_IsSizes){
-    lapply(seq_along(params@specific_model), function(i){
-        x <- params@specific_model[[i]]
-        target <- unlist(lapply(x, function(xx){
-            which(specific_As_Is_Dims_IsSizes$uniq_specific_Asnames == xx)
-        }))
-        dim_low <- specific_As_Is_Dims_IsSizes$specific_Dims[target]
-        if(1 %in% dim_low){
-            not1 <- dim_low[setdiff(seq_along(dim_low), which(dim_low == 1))]
-            if(!.all.equal(not1)){
-                msg <- paste0(c("The lower dimension 1 is specified",
-                    "as at least one of",
-                    paste(specific_As_Is_Dims_IsSizes$uniq_specific_Asnames[target], collapse=", ")
-                    ), collapse=" ")
-                msg <- paste0(msg, " to decompose a ",
-                    "higher-order tensor (length(dim(X)) >= 3). ",
-                    "In such a case, all the other lower dimensions ",
-                    "must be the same number in params@specific_dims.")
-                stop(msg)
-            }
-        }
-    })
+.checkCoupledMWCA_ranks_one_specific <- function(params, specific_As_Is_Dims_IsSizes){
+    info <- data.frame(
+        Asnames=specific_As_Is_Dims_IsSizes$uniq_specific_Asnames,
+        Dims=specific_As_Is_Dims_IsSizes$specific_Dims,
+        IsSizes=specific_As_Is_Dims_IsSizes[,4])
+    .checkRanks_one(params@specific_model, info)
 }
 
-.checkCoupledMWCA_ranks_projected <- function(params, specific_As_Is_Dims_IsSizes){
-    lapply(seq_along(params@specific_model), function(i){
-        x <- params@specific_model[[i]]
-        target <- unlist(lapply(x, function(xx){
-            which(specific_As_Is_Dims_IsSizes$uniq_specific_Asnames == xx)
-        }))
-        dim_high <- specific_As_Is_Dims_IsSizes$IsSizes[target]
-        dim_low <- specific_As_Is_Dims_IsSizes$specific_Dims[target]
-        dim_idx <- seq_along(dim_low)
-        dim_proj <- unlist(lapply(dim_idx, function(d){
-            prod(dim_low[setdiff(dim_idx, d)])
-        }))
-        if(!all(dim_proj >= dim_low)){
-            msg <- paste0("After the projection of ",
-                names(params@specific_model)[i],
-                ", the dimension is smaller than at least one of ",
-                paste(specific_As_Is_Dims_IsSizes$uniq_specific_Asnames[target], collapse=", "),
-                " in a dimension. Change the lower dimension of ",
-                paste(specific_As_Is_Dims_IsSizes$uniq_specific_Asnames[target], collapse=", "),
-                " in params@specific_dims.")
-            stop(msg)
-        }
-    })
+.checkCoupledMWCA_ranks_projected_specific <- function(params, specific_As_Is_Dims_IsSizes){
+    info <- data.frame(
+        Asnames=specific_As_Is_Dims_IsSizes$uniq_specific_Asnames,
+        Dims=specific_As_Is_Dims_IsSizes$specific_Dims,
+        IsSizes=specific_As_Is_Dims_IsSizes[,4])
+    .checkRanks_projected(params@specific_model, info)
 }
 
 # coretype: Value Check

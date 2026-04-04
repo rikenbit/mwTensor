@@ -1,0 +1,361 @@
+---
+title: "Introduction to mwTensor"
+author: "Koki Tsuyuzaki"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to mwTensor}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+## Overview
+
+**mwTensor** is an R package for Multi-Way Component Analysis (MWCA).
+It provides solvers for decomposing single or multiple matrices and tensors
+with flexible choices of matrix factorization algorithms (SVD, NMF, ICA, CX, etc.).
+
+Key functions:
+
+| Function | Purpose |
+|----------|---------|
+| `MWCA` | Decompose a single tensor |
+| `CoupledMWCA` | Decompose multiple coupled tensors simultaneously |
+| `checkCoupledMWCA` | Validate parameters before optimization |
+| `initCoupledMWCA` | Generate reproducible initial values |
+| `refineFactor` | One-step decomposition of a factor (experimental) |
+| `MWCAProgram` | Declarative factorization program representation |
+
+## 1. Single Tensor Decomposition with MWCA
+
+`MWCA` applies a matrix factorization method to each mode of a single tensor.
+
+```{r mwca-basic}
+library(mwTensor)
+
+# Create a 3-way tensor (10 x 12 x 8)
+set.seed(123)
+X <- array(runif(10 * 12 * 8), dim = c(10, 12, 8))
+
+# Default parameters: SVD on each mode, lower dim = 2
+params <- defaultMWCAParams(X)
+params@algorithms  # decomposition method per mode
+params@dims        # target lower dimension per mode
+```
+
+```{r mwca-run}
+out <- MWCA(params)
+
+# Factor matrices: one per mode
+# Each is dims[i] x dim(X)[i]
+lapply(out@factors, dim)
+
+# Core tensor
+dim(out@core)
+
+# Reconstruction error
+out@rec_error
+```
+
+### Choosing different algorithms per mode
+
+```{r mwca-custom}
+params2 <- new("MWCAParams",
+    X = X,
+    mask = NULL,
+    pseudocount = 1e-10,
+    algorithms = c("mySVD", "myNMF", "myICA"),
+    dims = c(3L, 4L, 2L),
+    transpose = FALSE,
+    viz = FALSE,
+    figdir = NULL)
+out2 <- MWCA(params2)
+lapply(out2@factors, dim)
+```
+
+Available algorithms: `mySVD`, `myALS_SVD`, `myNMF`, `myICA`, `myCX`.
+
+## 2. Coupled Tensor Decomposition with CoupledMWCA
+
+`CoupledMWCA` decomposes multiple tensors that share dimensions.
+Shared dimensions get **common** factor matrices; unshared dimensions
+get **specific** factor matrices.
+
+### Toy data
+
+```{r coupled-data}
+Xs <- toyModel("coupled_CP_Easy")
+# X1: 20x30 matrix, X2: 30x30x30 tensor, X3: 30x25 matrix
+lapply(Xs, dim)
+```
+
+The coupling structure:
+
+- X1 has dimensions I1 (20) and I2 (30)
+- X2 has dimensions I2 (30), I3 (30), I4 (30)
+- X3 has dimensions I4 (30) and I5 (25)
+
+I2 is shared between X1 and X2. I4 is shared between X2 and X3.
+
+### Setting up the model
+
+```{r coupled-model}
+# common_model maps: block -> (mode_name -> factor_name)
+common_model <- list(
+    X1 = list(I1 = "A1", I2 = "A2"),
+    X2 = list(I2 = "A2", I3 = "A3", I4 = "A4"),
+    X3 = list(I4 = "A4", I5 = "A5"))
+
+# A2 appears in both X1 and X2 -> shared factor for dimension I2
+# A4 appears in both X2 and X3 -> shared factor for dimension I4
+```
+
+### Running with default parameters
+
+```{r coupled-default}
+params <- defaultCoupledMWCAParams(Xs, common_model)
+
+# Inspect defaults
+params@common_algorithms  # "mySVD" for all
+params@common_dims        # 2 for all
+params@common_coretype    # "Tucker"
+
+out <- CoupledMWCA(params)
+
+# Common factor matrices
+lapply(out@common_factors, dim)
+
+# Convergence
+tail(out@rec_error)
+```
+
+### Customizing algorithms and dimensions
+
+```{r coupled-custom}
+params@common_algorithms <- list(
+    A1 = "mySVD", A2 = "myNMF", A3 = "myNMF",
+    A4 = "mySVD", A5 = "myCX")
+params@common_dims <- list(
+    A1 = 3, A2 = 3, A3 = 5, A4 = 4, A5 = 4)
+params@common_iteration <- list(
+    A1 = 5, A2 = 5, A3 = 5, A4 = 5, A5 = 5)
+
+out2 <- CoupledMWCA(params)
+lapply(out2@common_factors, dim)
+```
+
+## 3. Validating Parameters with checkCoupledMWCA
+
+Before running a potentially expensive optimization, validate the
+parameter object. Unlike `CoupledMWCA` which stops on the first error,
+`checkCoupledMWCA` collects **all** errors and warnings.
+
+```{r check-valid}
+result <- checkCoupledMWCA(params)
+result$ok
+result$summary
+```
+
+```{r check-invalid}
+# Introduce multiple errors
+bad_params <- params
+bad_params@common_algorithms$A1 <- "nonExistentAlgo"
+bad_params@common_iteration$A2 <- 1.5  # must be integer
+bad_params@common_coretype <- "TUCKER"  # must be "Tucker" or "CP"
+
+result <- checkCoupledMWCA(bad_params)
+result$ok
+result$errors
+result$summary
+```
+
+## 4. Reproducible Initialization with initCoupledMWCA
+
+`initCoupledMWCA` generates initial factor matrices without running
+optimization. This is useful for:
+
+- Ensuring reproducibility via seeds
+- Comparing different initialization strategies
+- Inspecting initial values before committing to a run
+
+```{r init-basic}
+params_ok <- defaultCoupledMWCAParams(Xs, common_model)
+
+# Random initialization with seed
+init <- initCoupledMWCA(params_ok, seed = 42L)
+init@init_policy
+lapply(init@common_factors, dim)
+```
+
+### Initialization policies
+
+```{r init-policies}
+# SVD-based initialization
+init_svd <- initCoupledMWCA(params_ok, seed = 42L, init_policy = "svd")
+
+# Non-negative random (safe for NMF)
+init_nn <- initCoupledMWCA(params_ok, seed = 42L, init_policy = "nonneg_random")
+
+# Verify non-negativity
+all(init_nn@common_factors$A1 >= 0)
+```
+
+### Using initialized values for optimization
+
+A `CoupledMWCAInit` object can be passed directly to `CoupledMWCA`.
+The pre-computed factors are used as the starting point.
+
+```{r init-to-coupled}
+# Initialize, then optimize
+init <- initCoupledMWCA(params_ok, seed = 42L, init_policy = "svd")
+out <- CoupledMWCA(init)
+
+# Same seed -> same result
+out_a <- CoupledMWCA(initCoupledMWCA(params_ok, seed = 123L))
+out_b <- CoupledMWCA(initCoupledMWCA(params_ok, seed = 123L))
+identical(out_a@common_factors$A1, out_b@common_factors$A1)
+```
+
+## 5. Factor Refinement with refineFactor (Experimental)
+
+`refineFactor` applies a one-step matrix factorization to a factor
+obtained from a previous decomposition. This is a proof-of-concept
+for "decomposition of a decomposition."
+
+### Mathematical interpretation
+
+Given a factor matrix A (k x n), the refinement decomposes t(A) (n x k):
+
+```
+t(A) ~ U * V
+```
+
+where U is (n x dim) and V is (dim x k). This gives:
+
+- `sub_factors = t(U)`: new lower-rank basis vectors (dim x n)
+- `coef = t(V)`: coefficients (k x dim)
+- `A ~ coef %*% sub_factors`
+
+```{r refine-basic}
+set.seed(42)
+X <- matrix(runif(20 * 30), nrow = 20, ncol = 30)
+params_mat <- defaultMWCAParams(X)
+params_mat@dims <- c(5L, 5L)
+fit <- MWCA(params_mat)
+
+# Factor 1 is 5 x 20. Refine it down to dim=2.
+ref <- refineFactor(fit, 1L, algorithm = "mySVD", dim = 2L)
+dim(ref@sub_factors)  # 2 x 20
+dim(ref@coef)         # 5 x 2
+
+# Approximation quality
+max(abs(ref@source_factor - ref@coef %*% ref@sub_factors))
+```
+
+### Refinement on CoupledMWCA results
+
+```{r refine-coupled}
+params_c <- defaultCoupledMWCAParams(Xs, common_model)
+params_c@common_dims <- list(A1=3, A2=3, A3=3, A4=3, A5=3)
+fit_c <- CoupledMWCA(params_c)
+
+# Refine common factor A2 (3 x 30) with NMF
+ref_A2 <- refineFactor(fit_c, "A2", algorithm = "myNMF", dim = 2L)
+dim(ref_A2@sub_factors)  # 2 x 30
+dim(ref_A2@coef)         # 3 x 2
+```
+
+## 6. Factorization Programs with MWCAProgram (Experimental)
+
+`MWCAProgram` provides a declarative way to describe factorization
+problems, including one-step factor refinements. This is an internal
+representation layer designed for future recursive decomposition support.
+
+### Defining a program
+
+```{r program-define}
+prog <- MWCAProgram(
+    blocks = list(
+        X1 = MWCAProgramBlock(
+            modes = c("I1", "I2"),
+            factor_map = c(I1 = "A1", I2 = "A2")),
+        X2 = MWCAProgramBlock(
+            modes = c("I2", "I3", "I4"),
+            factor_map = c(I2 = "A2", I3 = "A3", I4 = "A4")),
+        X3 = MWCAProgramBlock(
+            modes = c("I4", "I5"),
+            factor_map = c(I4 = "A4", I5 = "A5"))),
+    factors = list(
+        A1 = MWCAProgramFactor(mode = "I1", dim = 3),
+        A2 = MWCAProgramFactor(mode = "I2", dim = 3),
+        A3 = MWCAProgramFactor(mode = "I3", dim = 5, algorithm = "myNMF"),
+        A4 = MWCAProgramFactor(mode = "I4", dim = 4),
+        A5 = MWCAProgramFactor(mode = "I5", dim = 4)))
+print(prog)
+```
+
+### Validation
+
+```{r program-validate}
+v <- validateMWCAProgram(prog)
+v$ok
+v$summary
+```
+
+### Compiling to solver parameters
+
+```{r program-compile}
+compiled <- compileMWCAProgram(prog, Xs)
+is(compiled, "CoupledMWCAParams")
+compiled@common_dims
+compiled@common_algorithms$A3  # "myNMF" as specified
+```
+
+### Programs with refinement
+
+```{r program-refine}
+prog_ref <- MWCAProgram(
+    blocks = prog$blocks,
+    factors = prog$factors,
+    refinements = list(
+        R1 = MWCAProgramRefinement(
+            source_factor = "A2",
+            algorithm = "mySVD",
+            dim = 2)))
+
+result <- executeMWCAProgram(prog_ref, Xs)
+is(result$fit, "CoupledMWCAResult")
+length(result$refinements)  # 1
+dim(result$refinements$R1@sub_factors)
+```
+
+### Factor status: decomposed, fixed, frozen
+
+```{r program-status}
+prog_status <- MWCAProgram(
+    blocks = list(
+        X1 = MWCAProgramBlock(
+            modes = c("I1", "I2"),
+            factor_map = c(I1 = "A1", I2 = "A2")),
+        X2 = MWCAProgramBlock(
+            modes = c("I2", "I3"),
+            factor_map = c(I2 = "A2", I3 = "A3"))),
+    factors = list(
+        A1 = MWCAProgramFactor(mode = "I1", dim = 3, status = "decomposed"),
+        A2 = MWCAProgramFactor(mode = "I2", dim = 3, status = "fixed"),
+        A3 = MWCAProgramFactor(mode = "I3", dim = 3, status = "frozen")))
+# decomposed: updated by solver
+# fixed:      initialized but not updated (fix=TRUE)
+# frozen:     identity-like, not decomposed (decomp=FALSE)
+validateMWCAProgram(prog_status)$ok
+```
+
+## Session Info
+
+```{r session}
+sessionInfo()
+```

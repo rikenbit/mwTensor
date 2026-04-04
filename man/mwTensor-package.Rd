@@ -36,7 +36,7 @@ Petros Drineas et al., (2008). Relative-Error CUR Matrix Decompositions, \emph{S
 }
 
 \keyword{ package }
-\seealso{\code{\link{mySVD}}, \code{\link{myALS_SVD}}, \code{\link{myNMF}}, \code{\link{myICA}}, \code{\link{myCX}}, \code{\link{MWCA}}, \code{\link{CoupledMWCA}}, \code{\link{plotTensor3Ds}}}
+\seealso{\code{\link{mySVD}}, \code{\link{myALS_SVD}}, \code{\link{myNMF}}, \code{\link{myICA}}, \code{\link{myCX}}, \code{\link{MWCA}}, \code{\link{CoupledMWCA}}, \code{\link{checkCoupledMWCA}}, \code{\link{initCoupledMWCA}}, \code{\link{refineFactor}}, \code{\link{MWCAProgram}}, \code{\link{plotTensor3Ds}}}
 \examples{
 ls("package:mwTensor")
 }

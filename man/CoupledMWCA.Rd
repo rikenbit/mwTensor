@@ -1,6 +1,7 @@
 \name{CoupledMWCA}
 \docType{methods}
 \alias{CoupledMWCA,CoupledMWCAParams-method}
+\alias{CoupledMWCA,CoupledMWCAInit-method}
 \alias{CoupledMWCA}
 
 \title{
@@ -8,7 +9,10 @@ Coupled Multi-way Component Analysis (CoupledMWCA)
 }
 
 \description{
-The input is assumed to be a CoupledMWCAParams object.
+The input is assumed to be a CoupledMWCAParams or CoupledMWCAInit object.
+When a \code{\linkS4class{CoupledMWCAInit}} object (produced by
+\code{\link{initCoupledMWCA}}) is passed, its pre-computed factor
+matrices are used as the starting point for optimization.
 }
 
 \usage{
@@ -16,7 +20,7 @@ CoupledMWCA(params)
 }
 
 \arguments{
-\item{params}{CoupledMWCAParams object}
+\item{params}{A \code{CoupledMWCAParams} or \code{CoupledMWCAInit} object.}
 }
 
 \value{

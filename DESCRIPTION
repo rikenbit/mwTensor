@@ -1,10 +1,11 @@
 Package: mwTensor
 Type: Package
 Title: Multi-Way Component Analysis
-Version: 1.1.0
+Version: 1.2.0
 Authors@R: c(person("Koki", "Tsuyuzaki", role = c("aut", "cre"),
                       email = "k.t.the-answer@hotmail.co.jp"))
-Suggests: testthat
+Suggests: testthat, knitr, rmarkdown
+VignetteBuilder: knitr
 Depends: R (>= 4.1.0)
 Imports: methods,
     MASS,

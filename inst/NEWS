@@ -1,3 +1,29 @@
+VERSION 1.2.0
+------------------------
+   o checkCoupledMWCA was added for static validation of CoupledMWCAParams
+     without running optimization (collects all errors and warnings)
+   o initCoupledMWCA was added for reproducible initialization of
+     CoupledMWCA factors with seed control and multiple init policies
+     (random, svd, nonneg_random)
+   o CoupledMWCAInit class was added; CoupledMWCA now accepts
+     CoupledMWCAInit objects to use pre-computed initial values
+   o MWCAProgram, MWCAProgramBlock, MWCAProgramFactor,
+     MWCAProgramRefinement were added as a lightweight internal
+     representation for factorization programs
+   o validateMWCAProgram and compileMWCAProgram were added
+     to validate and compile programs to MWCAParams/CoupledMWCAParams
+   o executeMWCAProgram was added to run programs including
+     one-step factor refinements
+   o refineFactor was added for experimental one-step factor
+     refinement (decomposition of a decomposition)
+   o RefinedFactor class was added with sub_factors and coef slots
+     providing the mathematical relation A ~ coef %*% sub_factors
+   o Internal: duplicate function definitions across
+     CoupledMWCA_Check*.R files were resolved
+   o Internal: shared rank check helpers (.checkRanks_matrix,
+     .checkRanks_one, .checkRanks_projected) were extracted
+     to mwTensor-internal.R
+
 VERSION 1.1.0
 ------------------------
    o Mask tensor option for MWCA and CoupledMWCA are modified

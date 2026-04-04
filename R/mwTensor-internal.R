@@ -2,6 +2,12 @@
     all(x[1] == x)
 }
 
+.IsSizes <- function(XsSizes, Isnames){
+    out <- unlist(XsSizes)
+    names(out) <- Isnames
+    out
+}
+
 .emptyList <- function(X){
     for(i in seq_along(X)){
         X[[i]][] <- 0
@@ -170,4 +176,74 @@
     mat_one <- matrix(0, nrow=l1, ncol=l2)
     diag(mat_one) <- 1
     mat_one
+}
+
+# Shared rank checks for common/specific.
+# model: the model list (e.g. params@common_model or params@specific_model)
+# info: data.frame with columns Asnames, Dims, IsSizes
+.checkRanks_matrix <- function(model, info){
+    lapply(seq_along(model), function(i){
+        x <- model[[i]]
+        if(length(x) == 2){
+            target <- unlist(lapply(x, function(xx){
+                which(info$Asnames == xx)
+            }))
+            if(!.all.equal(info$Dims[target])){
+                msg <- paste0("model[[", i, "]] is a matrix.")
+                msg <- paste(c(msg, "In such a case, the lower dimension of ",
+                    paste(info$Asnames[target], collapse=", "),
+                    "must be the same number in dims."), collapse=" ")
+                stop(msg)
+            }
+        }
+    })
+}
+
+.checkRanks_one <- function(model, info){
+    lapply(seq_along(model), function(i){
+        x <- model[[i]]
+        target <- unlist(lapply(x, function(xx){
+            which(info$Asnames == xx)
+        }))
+        dim_low <- info$Dims[target]
+        if(1 %in% dim_low){
+            not1 <- dim_low[setdiff(seq_along(dim_low), which(dim_low == 1))]
+            if(!.all.equal(not1)){
+                msg <- paste0(c("The lower dimension 1 is specified",
+                    "as at least one of",
+                    paste(info$Asnames[target], collapse=", ")),
+                    collapse=" ")
+                msg <- paste0(msg, " to decompose a ",
+                    "higher-order tensor (length(dim(X)) >= 3). ",
+                    "In such a case, all the other lower dimensions ",
+                    "must be the same number in dims.")
+                stop(msg)
+            }
+        }
+    })
+}
+
+.checkRanks_projected <- function(model, info){
+    lapply(seq_along(model), function(i){
+        x <- model[[i]]
+        target <- unlist(lapply(x, function(xx){
+            which(info$Asnames == xx)
+        }))
+        dim_high <- info$IsSizes[target]
+        dim_low <- info$Dims[target]
+        dim_idx <- seq_along(dim_low)
+        dim_proj <- unlist(lapply(dim_idx, function(d){
+            prod(dim_low[setdiff(dim_idx, d)])
+        }))
+        if(!all(dim_proj >= dim_low)){
+            msg <- paste0("After the projection of ",
+                names(model)[i],
+                ", the dimension is smaller than at least one of ",
+                paste(info$Asnames[target], collapse=", "),
+                " in a dimension. Change the lower dimension of ",
+                paste(info$Asnames[target], collapse=", "),
+                " in dims.")
+            stop(msg)
+        }
+    })
 }
